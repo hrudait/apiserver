@@ -8,10 +8,7 @@ app.listen(5000)
 app.get('/', async (req,res)=>{
     
     const { wellFormed, validDomain, validMailbox } = await validate("hrudai@hrudai.com")
-    console.log(wellFormed);
-    console.log(validDomain);
-    console.log(validMailbox);
-    res.send("all good mate")
+    res.send({"wellFormed":wellFormed,"validDomain":validDomain,"validMailbox":validMailbox});
 });
 async function validate(e){
     return (await emailValidator.verify('foo@hrudai.com'));
