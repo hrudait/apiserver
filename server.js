@@ -11,10 +11,10 @@ app.get('/', async (req,res)=>{
     for(const email of elist){
         const {wellFormed, validDomain, validMailbox } = await emailValidator.verify(email);
         if(validMailbox===true){
-            list.append("true")
+            list.push("true")
         }
         else{
-            list.append("false")
+            list.push("false")
         }
     }
     res.send({"valid":list});
