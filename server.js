@@ -6,10 +6,16 @@ const emailValidator = new EmailValidator();
 app.listen(5000)
 
 app.get('/', async (req,res)=>{
-    
-    const { wellFormed, validDomain, validMailbox } = await validate("hrudai@hrudai.com")
-    res.send({"wellFormed":wellFormed,"validDomain":validDomain,"validMailbox":validMailbox});
+    const elist = req.query.emails.split(',');
+    const list = [];
+    for(const email of elist){
+        const {wellFormed, validDomain, validMailbox } = await emailValidator.verify(email);
+        if(validMailbox===true){
+            list.append("true")
+        }
+        else{
+            list.append("false")
+        }
+    }
+    res.send({"valid":list});
 });
-async function validate(e){
-    return (await emailValidator.verify('foo@hrudai.com'));
-}
