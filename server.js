@@ -4,7 +4,7 @@ import permute from 'email-permutator'
 
 const app = express();
 const emailValidator = new EmailValidator();
-app.listen(5000)
+app.listen(80)
 
 app.get('/', async (req,res)=>{
     const elist = req.query.emails.split(',');
@@ -41,5 +41,6 @@ app.get('/finder', async(req,res)=>{
             list.push(email)
         }
     }
-    return({data:list})
+    const {wellFormed, validDomain, validMailbox } = await emailValidator.verify("ewewdwsekjhweuib222334343@"+domain);
+    return(res.send({'data':list,"catchall":validMailbox}))
 })
