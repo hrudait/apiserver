@@ -22,6 +22,7 @@ app.get('/', async (req,res)=>{
 });
 
 app.get('/finder', async(req,res)=>{
+    const startTime = Date.now();
     const firstName = req.query.firstName;
     const lastName = req.query.lastName;
     const domain = req.query.domain;
@@ -50,5 +51,8 @@ app.get('/finder', async(req,res)=>{
         return null;
     });
     await Promise.all(promises)
+    const endTime = Date.now(); // Record the end time
+    const elapsedTime = endTime - startTime; // Calculate elapsed time
+    console.log(`Time taken: ${elapsedTime}ms`);
     return(res.send({'data':list,"catchall":false}))
 })
