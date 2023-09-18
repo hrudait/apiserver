@@ -23,36 +23,31 @@ app.get('/', async (req,res)=>{
 
 app.get('/finder', async(req,res)=>{
     const startTime = Date.now();
-    const firstName = req.query.firstName;
-    const lastName = req.query.lastName;
-    const domain = req.query.domain;
     {
-        const {wellFormed, validDomain, validMailbox } = await emailValidator.verify("ewewdwsekjhweuib222334343@"+domain);
+        const {validMailbox } = await emailValidator.verify("ewewdwsekjhweuib222334343@"+req.query.domain);
         if(validMailbox===true){
             return(res.send({"catchall":true}))
         }
     }
     const elist = permute({    
-        firstName:firstName,
-        lastName:lastName,
+        firstName:req.query.firstName,
+        lastName:req.query.lastName,
         nickName:'',
         middleName:'',
-        domain1:domain,
+        domain1:req.query.domain,
         domain2:'',
         domain3:'',
       });
     const list = []
     const promises = elist.map(async (email) => {
-        const { wellFormed, validDomain, validMailbox } = await emailValidator.verify(email);
-        console.log(list.length)
+        const {validMailbox } = await emailValidator.verify(email);
         if(validMailbox===true){
             list.push(email)
         }
-        return null;
     });
     await Promise.all(promises)
+    res.send({'data':list,"catchall":false})
     const endTime = Date.now(); // Record the end time
     const elapsedTime = endTime - startTime; // Calculate elapsed time
     console.log(`Time taken: ${elapsedTime}ms`);
-    return(res.send({'data':list,"catchall":false}))
 })
