@@ -25,6 +25,12 @@ app.get('/finder', async(req,res)=>{
     const firstName = req.query.firstName;
     const lastName = req.query.lastName;
     const domain = req.query.domain;
+    {
+        const {wellFormed, validDomain, validMailbox } = await emailValidator.verify("ewewdwsekjhweuib222334343@"+domain);
+        if(validMailbox===true){
+            return(res.send({"catchall":true}))
+        }
+    }
     const elist = permute({    
         firstName:firstName,
         lastName:lastName,
@@ -35,12 +41,14 @@ app.get('/finder', async(req,res)=>{
         domain3:'',
       });
     const list = []
-    for(const email of elist){
-        const {wellFormed, validDomain, validMailbox } = await emailValidator.verify(email);
+    const promises = elist.map(async (email) => {
+        const { wellFormed, validDomain, validMailbox } = await emailValidator.verify(email);
+        console.log(list.length)
         if(validMailbox===true){
             list.push(email)
         }
-    }
-    const {wellFormed, validDomain, validMailbox } = await emailValidator.verify("ewewdwsekjhweuib222334343@"+domain);
-    return(res.send({'data':list,"catchall":validMailbox}))
+        return null;
+    });
+    await Promise.all(promises)
+    return(res.send({'data':list,"catchall":false}))
 })
