@@ -1,18 +1,30 @@
-import google from 'googlethis';
+var verifier = require('email-verify');
+var infoCodes = verifier.infoCodes;
 
-const options = {
-  page: 0, 
-  safe: false, // Safe Search
-  parse_ads: false, // If set to true sponsored results will be parsed
-  additional_params: { 
-    // add additional parameters here, see https://moz.com/blog/the-ultimate-guide-to-the-google-search-parameters and https://www.seoquake.com/blog/google-search-param/
-    hl: 'en' 
+verifier.verify( 'anemail@domain.com', function( err, info ){
+  if( err ) console.log(err);
+  else{
+    console.log( "Success (T/F): " + info.success );
+    console.log( "Info: " + info.info );
+
+    //Info object returns a code which representing a state of validation:
+
+    //Connected to SMTP server and finished email verification
+    console.log(info.code === infoCodes.finishedVerification);
+
+    //Domain not found
+    console.log(info.code === infoCodes.domainNotFound);
+
+    //Email is not valid
+    console.log(info.code === infoCodes.invalidEmailStructure);
+
+    //No MX record in domain name
+    console.log(info.code === infoCodes.noMxRecords);
+
+    //SMTP connection timeout
+    console.log(info.code === infoCodes.SMTPConnectionTimeout);
+
+    //SMTP connection error
+    console.log(info.code === infoCodes.SMTPConnectionError)
   }
-}
-  
-const response = await google.search('"erauber@linkedin.com"', options);
-console.log(response.results)
-
-for (let i = 0; i < response.results.length; i++) {
-    console.log(response.results[i].url);
-}
+});

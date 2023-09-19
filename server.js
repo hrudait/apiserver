@@ -64,7 +64,7 @@ app.get('/finder', async(req,res)=>{
         }
         return temp;
     })
-    console.log(Promise.all(promises))
+    console.log(await Promise.all(promises))
     res.send({'data':list,"catchall":false})
     const endTime = Date.now(); // Record the end time
     const elapsedTime = endTime - startTime; // Calculate elapsed time
